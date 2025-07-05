@@ -174,13 +174,14 @@ public:
         try 
         {
             if (product->getItexpired() == true) 
-                throw invalid_argument("Product is expired and cannot be added to the cart");
+                throw invalid_argument(product->getName() + " is expired and cannot be added to the cart");
             
             if (product->getQuantity() <= 0)
                 throw invalid_argument("Product quantity must be greater than zero");
 
-            if(customer->getBalance() < product->total_cost() + product->total_shipping_fees())
-                throw invalid_argument("Insufficient balance to add this to the cart");
+            if(customer->getBalance() < product->total_cost() + product->total_shipping_fees()) {
+                throw invalid_argument("Insufficient balance to add " + product->getName() + " to the cart");
+            }
         }
         catch (const invalid_argument& e) {
             cout << "Error: " << e.what() << endl;
@@ -293,6 +294,10 @@ int main() {
 
     Product* iphone = new Shippable_Product("iphone", 300.0, 2, false, 1.5);
 
+    // this product is expired
+    Product* cheese = new Shippable_Product("cheese", 15, 2, true, 3.0);
+
+
 
     //(string name, double price, int quantity, bool Is_expired)
     Product* ticket = new NonShippable_Product("Event Ticket", 200.0, 1, false);
@@ -303,6 +308,8 @@ int main() {
     cart.add(book);
     cart.add(iphone);
     cart.add(ticket);
+    cart.add(cheese); // This will throw an error because cheese is expired);
+
 
 
     
